@@ -1,5 +1,8 @@
 from unittest import TestCase
 
+# These are mostly smoke tests designed to find major flaws in the code, need some more sensitive
+# tests that better validate the outputs
+
 
 class TestCPACOutputConversion(TestCase):
 
@@ -10,30 +13,23 @@ class TestCPACOutputConversion(TestCase):
         import yaml
         import os
 
-        # cpac_paths_file_path = '/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_filepaths.txt'
-        cpac_paths_file_path = '/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_outputs_sca.txt'
-        cpac_derivatives_dictionary_path = \
-            '/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/cpac_derivatives_dictionary.json'
-        cpac_data_config_file = '/Users/cameron.craddock/Documents/NFB_SS_analysis/pre_skullstrip_data_config.yml'
+        cpac_paths_file_path = os.path.dirname(__file__) + '/test_files/sub-M10933594_ses-NFB3.json'
+        cpac_derivatives_dictionary_path = os.path.dirname(
+            __file__) + '/test_files/test_cpac_derivatives_dictionary.json'
+        cpac_data_config_file = os.path.dirname(__file__) + '/test_files/pre_skullstrip_data_config.yml'
+        output_reference_dictionary = os.path.dirname(__file__) + '/test_files/sub-M10933594_ses-NFB3_cpac_to_bids.json'
 
-
-        with open(cpac_derivatives_dictionary_path, 'r') as istream:
-            cpac_derivatives_dictionary = json.load(istream)
+        with open(cpac_derivatives_dictionary_path, 'r') as json_input_stream:
+            cpac_derivatives_dictionary = json.load(json_input_stream)
 
         cpac_write_derivative_list = [key for (key, value) in cpac_derivatives_dictionary.items() if
-                                      value['write_derivative'] == True]
+                                      value['write_derivative'] is True]
 
-        cpac_output_file_paths = []
+        with open(cpac_paths_file_path, 'r') as json_input_stream:
+            cpac_output_file_paths = json.load(json_input_stream)
 
-        with open(cpac_paths_file_path, 'r') as in_fd:
-            cpac_output_file_paths = [file_path.rstrip() for file_path in in_fd.readlines()]
-
-        # for root, directories, filename_list in os.walk("/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/"):
-        #     for filename in filename_list:
-        #         cpac_output_file_paths.append(os.path.join(root, filename))
-
-        with open(cpac_data_config_file, 'r') as stream:
-            cpac_data_config_list = yaml.load(stream)
+        with open(cpac_data_config_file, 'r') as yaml_input_stream:
+            cpac_data_config_list = yaml.load(yaml_input_stream)
 
         cpac_data_config_dict = {}
         for cpac_data_config in cpac_data_config_list:
@@ -47,332 +43,171 @@ class TestCPACOutputConversion(TestCase):
         assert isinstance(bids_dictionary, dict)
         assert bids_dictionary != {}
 
-        assert cpb.convert_cpac_output_to_bids_derivative(bids_dictionary)
+        cpac_bids_path_mapping = cpb.create_bids_outputs_dictionary(bids_dictionary)
+        assert isinstance(cpac_bids_path_mapping, dict)
+
+        # with open(os.path.dirname(__file__)+'/test_files/test_paths.json', 'w') as json_output_stream:
+        #     json.dump(cpac_bids_path_mapping, json_output_stream, indent=4)
+
+        # compare against hand verified reference mapping
+        with open(output_reference_dictionary, 'r') as json_input_stream:
+            reference_cpac_bids_path_mapping = json.load(json_input_stream)
+
+        for cpac_path, bids_path in cpac_bids_path_mapping.items():
+            assert bids_path == reference_cpac_bids_path_mapping[cpac_path]
+
+        # eventually could add a test for bids compliance
 
     def test_convert_nuisance_regressors_to_bids(self):
+        import os
         import cpac_output_to_bids as cpb
 
-        cpac_regressor_file_path = "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/functional_nuisance_regressors/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/nuisance_regressors.mat"
-        bids_regressor_file_path = "/tmp/bids_regressors.json"
+        cpac_regressor_file_path = os.path.dirname(__file__) + \
+            "/test_files/pipeline_cpac/sub-M10933594_ses-NFB3/functional_nuisance_regressors/_scan_task-morald/" \
+            "_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/" \
+            "nuisance_regressors.mat"
+
+        bids_regressor_file_path = "/tmp/bids_nuisance_regressors.tsv"
 
         outfile = cpb.convert_nuisance_regressors_to_bids(cpac_regressor_file_path, bids_regressor_file_path)
 
-        assert outfile
+        assert os.path.isfile(outfile)
 
-    # movement_parameters: movement_parameters + max_displacement + framewise displacement
-    # movement_statistics: motion_params + power_params
     def test_aggregate_movement_parameters(self):
         import cpac_output_to_bids as cpb
+        import os
+        import yaml
+        import json
 
-        cpac_output_to_bids_paths = {
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/movement_parameters/_scan_task-morald/fristons_twenty_four.1D":
-                "/tmp/morald_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/movement_parameters/_scan_task-msit/fristons_twenty_four.1D":
-                "/tmp/msit_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/movement_parameters/_scan_task-peer_run-1/fristons_twenty_four.1D":
-                "/tmp/peer_run-1_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/movement_parameters/_scan_task-peer_run-2/fristons_twenty_four.1D":
-                "/tmp/peer_run-2_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/movement_parameters/_scan_task-test/fristons_twenty_four.1D":
-                "/tmp/test_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/movement_parameters/_scan_task-train/fristons_twenty_four.1D":
-                "/tmp/train_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/frame_wise_displacement/_scan_task-morald/FD.1D":
-                "/tmp/morald_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/frame_wise_displacement/_scan_task-msit/FD.1D":
-                "/tmp/msit_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/frame_wise_displacement/_scan_task-peer_run-1/FD.1D":
-                "/tmp/peer_run-1_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/frame_wise_displacement/_scan_task-peer_run-2/FD.1D":
-                "/tmp/peer_run-2_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/frame_wise_displacement/_scan_task-test/FD.1D":
-                "/tmp/test_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/frame_wise_displacement/_scan_task-train/FD.1D":
-                "/tmp/train_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/max_displacement/_scan_task-morald/max_displacement.1D":
-                "/tmp/morald_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/max_displacement/_scan_task-msit/max_displacement.1D":
-                "/tmp/msit_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/max_displacement/_scan_task-peer_run-1/max_displacement.1D":
-                "/tmp/peer_run-1_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/max_displacement/_scan_task-peer_run-2/max_displacement.1D":
-                "/tmp/peer_run-2_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/max_displacement/_scan_task-test/max_displacement.1D":
-                "/tmp/test_movement_parameters.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/max_displacement/_scan_task-train/max_displacement.1D":
-                "/tmp/train_movement_parameters.tsv"
-             }
+        cpac_output_path = os.path.dirname(__file__) + '/test_files/pipeline_cpac/'
+        cpac_data_config_file = os.path.dirname(__file__) + '/test_files/pre_skullstrip_data_config.yml'
+        cpac_derivatives_dictionary_path = os.path.dirname(
+            __file__) + '/test_files/test_cpac_derivatives_dictionary.json'
 
-        for (cpac_output_path, bids_output_path) in cpac_output_to_bids_paths.items():
+        with open(cpac_derivatives_dictionary_path, 'r') as json_input_stream:
+            cpac_derivatives_dictionary = json.load(json_input_stream)
+
+        cpac_write_derivative_list = [key for (key, value) in cpac_derivatives_dictionary.items() if
+                                      value['write_derivative'] is True]
+
+        with open(cpac_data_config_file, 'r') as yaml_input_stream:
+            cpac_data_config_list = yaml.load(yaml_input_stream)
+
+        cpac_data_config_dict = {}
+        for cpac_data_config in cpac_data_config_list:
+            cpac_data_config_dict[
+                "_".join([cpac_data_config['subject_id'], cpac_data_config['unique_id']]).lower()] = cpac_data_config
+
+        movement_parameter_files = []
+        for path_root, directories, file_names in os.walk(cpac_output_path):
+            for file_name in file_names:
+                full_file_path = os.path.join(path_root, file_name)
+                if file_name in ["fristons_twenty_four.1D", "FD.1D", "max_displacement.1D"]:
+                    movement_parameter_files.append(full_file_path)
+
+        bids_dictionary = cpb.extract_bids_derivative_info_from_cpac_outputs(movement_parameter_files,
+                                                                             cpac_data_config_dict, {},
+                                                                             cpac_write_derivative_list)
+
+        cpac_bids_path_mapping = cpb.create_bids_outputs_dictionary(bids_dictionary)
+
+        for (cpac_output_path, bids_output_path) in cpac_bids_path_mapping.items():
+
+            if not os.path.isdir(os.path.dirname(bids_output_path)):
+                os.makedirs(os.path.dirname(bids_output_path), exist_ok=True)
+
             outfile = cpb.aggregate_movement_parameters(cpac_output_path, bids_output_path)
-            assert outfile
+            assert os.path.isfile(outfile)
 
-    # movement_parameters: movement_parameters + max_displacement + framewise displacement
-    # movement_statistics: motion_params + power_params
     def test_aggregate_movement_statistics(self):
         import cpac_output_to_bids as cpb
+        import os
+        import yaml
+        import json
 
-        cpac_output_to_bids_paths = {
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/power_params/_scan_task-morald/_threshold_0.5/pow_params.txt":
-                "/tmp/morald_motion_stats.json",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/power_params/_scan_task-msit/_threshold_0.5/pow_params.txt":
-                "/tmp/msit_motion_stats.json",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/power_params/_scan_task-peer_run-1/_threshold_0.5/pow_params.txt":
-                "/tmp/peer_run-1_motion_stats.json",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/power_params/_scan_task-peer_run-2/_threshold_0.5/pow_params.txt":
-                "/tmp/peer_run-2_motion_stats.json",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/power_params/_scan_task-test/_threshold_0.5/pow_params.txt":
-                "/tmp/test_motion_stats.json",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/power_params/_scan_task-train/_threshold_0.5/pow_params.txt":
-                "/tmp/train_motion_stats.json",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/motion_params/_scan_task-morald/motion_parameters.txt":
-                "/tmp/morald_motion_stats.json",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/motion_params/_scan_task-msit/motion_parameters.txt":
-                "/tmp/msit_motion_stats.json",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/motion_params/_scan_task-peer_run-1/motion_parameters.txt":
-                "/tmp/peer_run-1_motion_stats.json",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/motion_params/_scan_task-peer_run-2/motion_parameters.txt":
-                "/tmp/peer_run-2_motion_stats.json",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/motion_params/_scan_task-test/motion_parameters.txt":
-                "/tmp/test_motion_stats.json",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/"
-            "sub-M10943635_ses-NFB3/motion_params/_scan_task-train/motion_parameters.txt":
-                "/tmp/train_motion_stats.json"
-        }
+        cpac_output_path = os.path.dirname(__file__) + '/test_files/pipeline_cpac/'
+        cpac_data_config_file = os.path.dirname(__file__) + '/test_files/pre_skullstrip_data_config.yml'
+        cpac_derivatives_dictionary_path = os.path.dirname(
+            __file__) + '/test_files/test_cpac_derivatives_dictionary.json'
 
-        for (cpac_output_path, bids_output_path) in cpac_output_to_bids_paths.items():
+        with open(cpac_derivatives_dictionary_path, 'r') as json_input_stream:
+            cpac_derivatives_dictionary = json.load(json_input_stream)
+
+        cpac_write_derivative_list = [key for (key, value) in cpac_derivatives_dictionary.items() if
+                                      value['write_derivative'] is True]
+
+        with open(cpac_data_config_file, 'r') as yaml_input_stream:
+            cpac_data_config_list = yaml.load(yaml_input_stream)
+
+        cpac_data_config_dict = {}
+        for cpac_data_config in cpac_data_config_list:
+            cpac_data_config_dict[
+                "_".join(
+                    [cpac_data_config['subject_id'], cpac_data_config['unique_id']]).lower()] = cpac_data_config
+
+        movement_parameter_files = []
+        for path_root, directories, file_names in os.walk(cpac_output_path):
+            for file_name in file_names:
+                full_file_path = os.path.join(path_root, file_name)
+                if file_name in ['pow_params.txt', 'motion_parameters.txt']:
+                    movement_parameter_files.append(full_file_path)
+
+        bids_dictionary = cpb.extract_bids_derivative_info_from_cpac_outputs(movement_parameter_files,
+                                                                             cpac_data_config_dict, {},
+                                                                             cpac_write_derivative_list)
+
+        cpac_bids_path_mapping = cpb.create_bids_outputs_dictionary(bids_dictionary)
+
+        for (cpac_output_path, bids_output_path) in cpac_bids_path_mapping.items():
+
+            if not os.path.isdir(os.path.dirname(bids_output_path)):
+                os.makedirs(os.path.dirname(bids_output_path), exist_ok=True)
+
             outfile = cpb.aggregate_movement_statistics(cpac_output_path, bids_output_path)
-            assert outfile
+            assert os.path.isfile(outfile)
 
     def test_convert_cpac_roi_tc_to_bids(self):
         import cpac_output_to_bids as cpb
         import os
+        import yaml
+        import json
 
-        cpac_output_to_bids_paths = {
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobal_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobal_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobal_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobal_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobal_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobal_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobal_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-Global_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-Global_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-Global_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-Global_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-Global_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-Global_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-Global_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobal_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobal_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobal_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobal_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobal_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobal_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobal_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-Global_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-Global_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-Global_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-Global_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-Global_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-Global_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-Global_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobal_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobal_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobal_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobal_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobal_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobal_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobal_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-Global_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-Global_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-Global_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-Global_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-Global_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-Global_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-Global_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobal_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobal_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobal_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobal_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobal_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobal_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobal_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-Global_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-Global_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-Global_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-Global_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-Global_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-Global_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-Global_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobal_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobal_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobal_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobal_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobal_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobal_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobal_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-Global_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-Global_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-Global_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-Global_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-Global_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-Global_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-Global_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobal_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobal_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobal_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobal_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobal_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobal_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobal_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-Global_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-Global_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-Global_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-Global_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-Global_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-Global_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-Global_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobal_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-Global_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobal_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-Global_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobal_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-Global_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobal_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-Global_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobal_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-Global_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobal_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-Global_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-GlobalBandpassed01to1_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-GlobalBandpassed01to1_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-GlobalBandpassed01to1_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-GlobalBandpassed01to1_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-GlobalBandpassed01to1_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-GlobalBandpassed01to1_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-GlobalBandpassed01to1_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-GlobalBandpassed01to1_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-GlobalBandpassed01to1_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-GlobalBandpassed01to1_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-GlobalBandpassed01to1_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-GlobalBandpassed01to1_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-GlobalBandpassed01to1_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-GlobalBandpassed01to1_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-GlobalBandpassed01to1_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-GlobalBandpassed01to1_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-GlobalBandpassed01to1_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-GlobalBandpassed01to1_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-GlobalBandpassed01to1_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-GlobalBandpassed01to1_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-GlobalBandpassed01to1_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-GlobalBandpassed01to1_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-GlobalBandpassed01to1_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-GlobalBandpassed01to1_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-GlobalBandpassed01to1_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-GlobalBandpassed01to1_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-GlobalBandpassed01to1_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-GlobalBandpassed01to1_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-GlobalBandpassed01to1_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-GlobalBandpassed01to1_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-GlobalBandpassed01to1_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-GlobalBandpassed01to1_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-GlobalBandpassed01to1_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-GlobalBandpassed01to1_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-GlobalBandpassed01to1_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_aal_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-GlobalBandpassed01to1_atlas-aalmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC200/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-GlobalBandpassed01to1_atlas-CC200_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_CC400/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-GlobalBandpassed01to1_atlas-CC400_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ez_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-GlobalBandpassed01to1_atlas-ezmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_ho_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-GlobalBandpassed01to1_atlas-homaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_rois_3mm/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-GlobalBandpassed01to1_atlas-rois3mm_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/roi_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_mask_tt_mask_pad/roi_stats.csv": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-GlobalBandpassed01to1_atlas-ttmaskpad_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-MORALDILEMMA_bold_space-orig_variant-GlobalBandpassed01to1_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-msit/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-MSIT_bold_space-orig_variant-GlobalBandpassed01to1_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-peer_run-1/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-PEER1_bold_space-orig_variant-GlobalBandpassed01to1_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-peer_run-2/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-PEER2_bold_space-orig_variant-GlobalBandpassed01to1_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-test/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTEST_bold_space-orig_variant-GlobalBandpassed01to1_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-noGlobalBandpassed01to1_atlas-PNASSmith09rsn10_roisdata.tsv",
-            "/Users/cameron.craddock/Documents/NFB_SS_analysis/cpac_output_to_bids/test_data/pipeline_pre_skullstrip__freq-filter/sub-M10943635_ses-NFB3/spatial_map_timeseries/_scan_task-train/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/_spatial_map_PNAS_Smith09_rsn10/spatial_map_timeseries.txt": "/tmp/sub-M10943635_ses-NFB3_task-DMNTRACKINGTRAIN_bold_space-orig_variant-GlobalBandpassed01to1_atlas-PNASSmith09rsn10_roisdata.tsv"
-        }
+        cpac_output_path = os.path.dirname(__file__) + '/test_files/pipeline_cpac/'
+        cpac_data_config_file = os.path.dirname(__file__) + '/test_files/pre_skullstrip_data_config.yml'
+        cpac_derivatives_dictionary_path = os.path.dirname(
+            __file__) + '/test_files/test_cpac_derivatives_dictionary.json'
 
-        for (cpac_output_path, bids_output_path) in cpac_output_to_bids_paths.items():
+        with open(cpac_derivatives_dictionary_path, 'r') as json_input_stream:
+            cpac_derivatives_dictionary = json.load(json_input_stream)
+
+        cpac_write_derivative_list = [key for (key, value) in cpac_derivatives_dictionary.items() if
+                                      value['write_derivative'] is True]
+
+        with open(cpac_data_config_file, 'r') as yaml_input_stream:
+            cpac_data_config_list = yaml.load(yaml_input_stream)
+
+        cpac_data_config_dict = {}
+        for cpac_data_config in cpac_data_config_list:
+            cpac_data_config_dict[
+                "_".join([cpac_data_config['subject_id'], cpac_data_config['unique_id']]).lower()] = cpac_data_config
+
+        roi_timeseries_files = []
+        for path_root, directories, file_names in os.walk(cpac_output_path):
+            for file_name in file_names:
+                full_file_path = os.path.join(path_root, file_name)
+                if 'roi_timeseries' in full_file_path:
+                    roi_timeseries_files.append(full_file_path)
+
+        bids_dictionary = cpb.extract_bids_derivative_info_from_cpac_outputs(roi_timeseries_files,
+                                                                             cpac_data_config_dict, {},
+                                                                             cpac_write_derivative_list)
+
+        cpac_bids_path_mapping = cpb.create_bids_outputs_dictionary(bids_dictionary)
+
+        for (cpac_output_path, bids_output_path) in cpac_bids_path_mapping.items():
+
+            if not os.path.isdir(os.path.dirname(bids_output_path)):
+                os.makedirs(os.path.dirname(bids_output_path), exist_ok=True)
+
             outfile = cpb.convert_cpac_roi_tc_to_bids(cpac_output_path, bids_output_path)
             assert os.path.isfile(outfile)
-
