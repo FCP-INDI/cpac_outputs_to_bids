@@ -1,0 +1,282 @@
+#File	Sub-brick
+		#	Mean_1  	Mean_2  	Mean_3  	Mean_4  	Mean_5  	Mean_6  	Mean_7  	Mean_8  	Mean_9  	Mean_10  	Mean_11  
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	0[?]
+			-22.780182	-24.794329	-21.919603	-41.834025	-7.472143	-17.306854	2.917794	5.695404	-29.242264	10.436809	-49.509743
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	1[?]
+			83.501578	13.102652	-15.764758	29.208804	-20.347459	0.314605	0.089718	19.395892	0.570323	21.703873	-63.742374
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	2[?]
+			36.118820	23.966173	56.623851	19.740960	-22.626257	6.605510	65.908184	-7.978137	59.330280	-61.680778	14.558963
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	3[?]
+			4.407026	92.620765	-1.346746	109.588268	-18.126994	-19.272030	11.626211	42.980214	75.956400	0.594646	69.993801
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	4[?]
+			28.867319	39.751651	-19.360307	63.348121	-10.157889	19.223006	-50.007634	4.237278	-6.213428	7.456247	-11.418359
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	5[?]
+			-2.885963	-43.862608	14.100304	-45.864917	-0.929808	14.738861	10.374858	-32.743106	-32.223751	-54.252488	-43.664347
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	6[?]
+			-15.097955	-27.371558	-21.384011	-84.099914	-9.166645	-21.914455	73.010629	-1.444020	-18.751570	-72.077234	66.992880
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	7[?]
+			-60.207647	-26.326790	-60.246676	-102.873787	-10.920242	-21.423320	14.862976	-16.732240	-31.984070	-28.703941	52.837751
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	8[?]
+			-38.337574	-18.032928	1.644142	-46.757587	4.133329	-15.079044	-60.332971	25.856519	38.700635	15.138703	-3.375157
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	9[?]
+			-26.645673	0.746628	57.090275	-3.328530	-15.811883	2.472728	2.819580	-17.826323	16.467723	0.211512	-44.054147
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	10[?]
+			-10.421396	-33.040890	44.139898	16.875274	-5.937485	9.645464	-1.724764	-17.436203	35.644533	36.049469	58.577917
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	11[?]
+			24.540796	4.944928	-4.658668	47.000102	23.593494	17.298501	-38.271859	-9.197798	-70.312911	73.621224	-9.370516
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	12[?]
+			-41.050972	0.873530	26.946365	17.298145	-4.598760	27.921724	-5.103387	-24.193037	-29.067633	6.677311	-88.083306
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	13[?]
+			24.085146	-12.136376	12.919079	43.486950	27.407870	10.625544	-33.378427	9.463410	23.180305	-10.861102	3.798035
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	14[?]
+			2.582003	6.491022	-17.890047	19.927657	36.501319	9.702379	5.957933	-6.385045	-6.738364	21.130337	13.301204
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	15[?]
+			14.175948	9.079867	-17.616560	0.627951	37.429462	5.102407	-21.192045	8.906979	-6.714843	54.324839	67.838843
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	16[?]
+			9.655949	6.763153	-22.509474	-10.009369	31.320070	8.586975	6.465991	1.305198	-34.489209	-8.645902	-21.972215
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	17[?]
+			-19.687162	-55.282868	-21.799767	-58.827592	-23.710414	-37.772199	-17.995299	15.875763	-5.952350	19.128431	-39.228893
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	18[?]
+			-37.568235	4.281223	-1.418380	-25.718002	-2.140105	-28.316541	75.967056	1.576415	-15.379716	-29.279380	-91.717857
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	19[?]
+			-45.063721	-33.644779	-28.451276	-29.603845	-6.440536	-27.551701	25.997584	-24.573663	-45.490855	-33.501169	-24.504264
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	20[?]
+			-77.562548	-69.764911	-95.681766	-115.886725	16.364038	-49.937096	3.932799	21.041789	45.341913	43.958836	34.724204
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	21[?]
+			-37.394165	3.211821	-67.043713	-5.427066	-8.195767	-28.703549	-13.795712	39.715028	31.133445	10.984293	15.298020
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	22[?]
+			-77.070187	-50.927474	-56.990582	-52.695942	5.236137	-29.052590	-36.833521	44.381888	9.343495	54.875969	66.527585
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	23[?]
+			-6.671482	29.094873	-26.920142	-36.656363	-33.585492	-12.242338	25.154981	19.111813	41.542642	-19.993480	-4.919341
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	24[?]
+			84.176276	48.117787	46.938847	42.975025	-11.893144	26.274222	-37.556147	12.450850	-1.277658	-38.145401	5.519231
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	25[?]
+			92.751340	33.108186	83.217820	49.006616	4.012406	15.320834	-60.333292	-16.662388	-25.809851	9.375963	40.159180
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	26[?]
+			47.689257	18.411820	59.153260	54.152698	9.741810	23.125612	-17.152285	7.116933	-31.947929	-13.590309	0.703168
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	27[?]
+			102.850993	31.159387	78.261210	128.447212	-6.756271	39.614473	72.645017	-32.261003	1.202126	-54.610730	-7.078758
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	28[?]
+			17.607240	60.507576	57.561361	98.731622	33.997622	36.402870	-7.323925	25.589169	-9.381645	34.525358	-26.210830
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	29[?]
+			2.925269	-14.249013	80.258291	0.534359	9.783437	-13.390993	40.148707	4.201225	-28.036503	-49.588599	43.502543
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	30[?]
+			13.926034	3.093104	-1.642158	1.131892	6.534841	40.364243	16.812296	5.966527	25.083601	-11.454749	33.914203
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	31[?]
+			42.759933	14.623144	36.286095	57.221021	19.040804	-18.198012	-47.515496	3.343606	-30.817252	1.656765	42.006475
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	32[?]
+			-23.962747	22.969274	-43.733340	23.336802	-4.342710	7.215232	-36.735923	16.327568	-31.463964	7.759111	-30.442565
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	33[?]
+			9.165196	5.260513	1.174443	61.541392	-22.521704	28.133467	66.111195	-73.925720	41.104477	-92.369731	-46.019003
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	34[?]
+			40.550698	-13.411216	34.493312	37.596893	15.381613	52.635007	-54.258507	3.542662	-26.061829	27.669663	42.283711
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	35[?]
+			10.347953	-3.731421	44.343614	-9.034436	6.873926	52.496081	6.576322	-59.728386	-9.616994	-6.628343	64.137030
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	36[?]
+			-36.479202	-46.107835	32.635605	-30.245705	-27.250265	29.599743	-23.615574	-39.477430	-3.189904	46.296769	49.383034
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	37[?]
+			-34.727571	17.420061	-13.254498	-39.484231	-28.595872	-19.094438	-27.131738	17.879015	-35.015766	6.824053	-24.810171
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	38[?]
+			-16.295551	6.140171	-70.704085	-52.140300	29.960918	-31.061018	-0.072387	25.583897	34.003506	-29.425836	-6.612058
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	39[?]
+			47.108881	9.512539	-55.724741	6.523037	18.555270	-24.065085	-12.347718	-16.856756	7.363996	-10.075764	35.969150
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	40[?]
+			-62.031009	-31.965783	11.388644	-1.665452	28.009389	52.066228	28.279761	-76.831524	23.336823	0.253905	-24.259562
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	41[?]
+			-5.943298	-0.992387	46.258716	17.961897	-4.099331	-20.937383	-42.861723	-11.433244	-56.323899	27.439753	-7.625535
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	42[?]
+			53.043365	41.420879	8.682020	32.803139	32.961917	-14.650731	39.654286	19.762657	66.514294	-26.819642	-110.968166
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	43[?]
+			-19.733065	18.696875	0.668980	-1.539784	-4.613692	-8.488435	-26.629819	-3.389323	35.157621	58.890264	78.819021
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	44[?]
+			-26.870676	-29.510360	-4.058284	-11.018406	7.021717	-19.460658	31.807369	-15.911042	-34.612801	33.103188	-36.128561
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	45[?]
+			-44.450294	26.459122	-44.133160	-7.570469	-28.833299	26.013584	22.009160	15.997892	57.491234	7.288299	21.645153
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	46[?]
+			-34.862814	-22.322406	-39.048847	-44.301560	-6.073387	14.357446	-23.522895	-19.349253	34.248946	34.535553	-62.895697
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	47[?]
+			23.400180	-0.871649	-27.408556	-47.977492	-14.399917	-47.008834	-6.498449	-16.108878	44.387519	6.323574	-30.076459
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	48[?]
+			-48.608412	-33.810645	-34.637166	-3.367663	-10.295374	-27.609340	-19.316821	11.554379	-16.062529	35.344032	-19.027659
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	49[?]
+			-34.909127	-9.867895	-2.719068	-36.331052	-8.193693	-1.191169	49.541451	12.873893	-24.038944	34.605095	-14.761765
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	50[?]
+			-74.152232	-56.224790	-33.172611	-25.537920	14.791648	27.069986	-10.347382	26.581906	-9.612422	60.086972	-14.140168
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	51[?]
+			10.306740	53.113867	-106.804849	-2.506470	-7.414991	18.323302	-55.609423	17.063981	41.899805	8.045037	-22.020472
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	52[?]
+			-44.389039	20.958832	-113.358339	-136.886563	4.293598	-69.165073	-47.673695	15.025117	-17.702403	46.625847	-11.342306
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	53[?]
+			-57.075297	-40.846966	-96.619970	-123.386365	9.031480	-22.780934	75.157853	12.029435	32.412763	-31.472441	13.659811
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	54[?]
+			76.159513	-30.115816	85.076066	-12.185182	-6.386091	12.553122	12.660083	-9.461594	-19.243612	11.727072	-4.419539
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	55[?]
+			-14.747751	-29.421197	61.338634	-14.131500	32.469853	35.586406	35.249727	-27.290374	-4.001512	-18.617006	-31.343512
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	56[?]
+			-60.258749	45.854435	8.070266	44.946177	6.883664	10.777927	-29.989600	-3.140391	-32.796416	-18.073461	23.563217
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	57[?]
+			52.248042	-5.961420	25.835426	42.180582	14.653479	-26.595459	96.286154	11.630981	-49.546707	-60.696422	-31.973621
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	58[?]
+			21.859845	10.449907	-10.897891	55.430431	-27.092008	3.026273	-1.529634	20.635971	12.444484	51.110819	-18.229337
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	59[?]
+			30.413047	-24.521277	-0.726163	-27.259369	5.130830	9.146683	-19.709637	-13.049035	-14.880161	66.614324	42.446560
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	60[?]
+			15.046881	33.191973	-16.571494	1.913172	-17.417155	-20.466199	27.968332	5.953531	28.635422	-34.012600	-29.644174
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	61[?]
+			98.975934	26.294573	40.223357	14.193049	4.020382	10.975744	-64.074175	-35.680415	-33.249249	3.805499	7.979904
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	62[?]
+			35.461519	48.759847	13.365385	29.108342	-16.604652	6.695513	-6.626001	8.318417	8.367190	24.051946	-21.836500
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	63[?]
+			-25.558153	36.002995	-14.257906	29.297689	-2.040479	20.203439	27.273651	0.005928	-17.742825	-7.950718	-0.999909
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	64[?]
+			54.921806	8.715523	31.586151	41.876459	15.362109	-2.472443	-59.668021	36.980815	23.358215	2.145017	65.707630
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	65[?]
+			37.341830	-1.587736	77.990913	6.802436	1.191832	4.892202	-11.720333	26.434303	-3.638297	-52.559929	-10.037884
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	66[?]
+			51.313910	-55.225011	111.944458	8.867899	-4.514290	1.971966	67.283597	-52.543673	-45.507508	-93.303773	39.520674
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	67[?]
+			26.501377	-50.591461	56.062389	-26.852265	-56.753622	19.398930	-41.039819	-28.680940	-23.583612	37.954500	-52.943903
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	68[?]
+			-59.572637	-29.666583	38.640225	-47.093546	-44.946665	-58.688862	57.857572	-8.651686	15.148300	26.195723	-41.767018
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	69[?]
+			-56.361126	-15.201512	-37.924612	-17.626089	-25.263187	12.991272	-74.394927	27.076999	41.684190	46.966531	44.482238
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	70[?]
+			-48.658858	-35.928759	-37.716333	-38.478454	16.229970	-18.658859	55.558066	-36.548949	16.337231	-44.948413	-16.249461
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	71[?]
+			-6.349243	-28.620106	-45.703082	38.464553	28.858421	-4.664685	5.702508	-0.990171	4.284240	-14.379933	30.873259
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	72[?]
+			62.171732	34.034649	-33.043463	-26.509738	48.483693	18.561509	3.763395	27.209668	-39.545781	-18.481399	79.059164
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	73[?]
+			-33.943259	34.977047	26.729804	-13.916442	-0.558384	30.754799	-27.858312	8.410654	18.434607	57.464457	3.164305
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	74[?]
+			41.541509	-0.367468	1.625482	21.602263	-1.503434	-3.417667	-51.705286	45.053304	-21.181349	-5.816531	-7.111817
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	75[?]
+			8.039671	27.543173	3.524093	-13.835632	0.593351	-0.869751	23.196318	54.042449	11.968204	-58.362388	-26.089468
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	76[?]
+			-17.734692	-3.983794	-30.418359	-7.755328	-6.304469	-8.691405	34.228230	-20.082941	-21.014540	-30.898304	37.545171
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	77[?]
+			-12.316179	18.540030	12.391076	63.913688	0.610105	7.903379	-6.018550	-46.946986	-13.794314	2.843794	-5.873671
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	78[?]
+			59.317934	6.842267	69.445591	58.948514	29.239373	-3.368558	29.856881	-9.368137	-3.732596	-41.176352	-10.658999
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	79[?]
+			68.350270	-29.759574	44.234608	-33.854166	-7.682950	5.297373	17.564043	-27.360943	-41.213245	27.098599	15.730885
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	80[?]
+			-2.363534	-29.123561	6.782663	-64.158138	-29.721134	-28.747475	-28.417086	-34.074963	11.371318	41.144699	-3.185042
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	81[?]
+			-51.327798	-5.621496	-111.022152	-67.464033	-14.352945	-39.338539	-67.633419	20.218117	69.061769	59.809428	70.963772
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	82[?]
+			-68.001939	-13.993724	16.605446	-32.965962	-7.442617	11.847215	37.345037	11.769341	-4.938203	-27.546260	-17.238772
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	83[?]
+			-12.068364	52.773049	-44.456857	79.137334	-6.433720	-0.447813	43.900373	47.261363	45.970835	-10.804033	-6.670181
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	84[?]
+			40.447716	56.615933	29.429739	118.686040	-1.944960	40.327462	-11.348949	55.527214	21.131828	-67.706091	-35.683040
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	85[?]
+			11.597844	19.773548	60.219936	85.024980	-0.454328	-3.699094	-2.353247	17.288369	21.602223	17.732495	14.993210
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	86[?]
+			-53.084978	-9.043796	33.406182	99.534353	20.450852	20.437311	9.406533	-22.448538	-49.958774	-37.485659	18.046227
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	87[?]
+			31.853124	25.928691	56.311081	74.369031	13.679645	2.684823	8.736667	-1.886840	-0.040630	-25.145029	-35.697440
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	88[?]
+			58.552602	78.889172	7.764216	78.204064	-3.987331	-4.197476	51.144874	32.544716	28.822688	-32.286407	-36.421033
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	89[?]
+			-45.976975	-93.687406	-22.561387	-55.525980	22.798613	32.892842	-69.488817	-14.796731	-13.701425	-8.884812	37.873014
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	90[?]
+			38.879979	-38.846244	5.840382	-55.302013	5.798348	-20.016680	56.618305	-21.054143	-22.345447	-3.802030	-35.261743
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	91[?]
+			4.334862	30.699643	48.859286	11.105511	-34.617356	-33.660124	-45.921072	-39.373820	6.262310	-25.175935	-30.673213
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	92[?]
+			-28.746184	5.417392	-24.204269	-28.494375	30.144949	-2.730455	33.589044	14.085349	38.120222	4.365669	10.971288
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	93[?]
+			0.492300	-30.607958	-24.187930	61.021763	-12.255702	12.287186	10.093335	-0.265377	-34.424626	-87.771121	-31.945649
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	94[?]
+			39.961900	41.894642	93.132290	83.983509	7.695337	27.827064	-5.275637	74.231938	-50.592955	27.797994	10.835384
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	95[?]
+			8.587297	31.310661	-13.354001	22.690030	-17.202508	2.095227	-11.601077	-15.322011	18.120124	-15.543489	59.657675
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	96[?]
+			-34.890818	23.852508	-90.971378	51.802785	66.795697	-20.067547	-49.636928	68.561093	7.841793	19.143109	15.413509
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	97[?]
+			19.099432	2.784476	-90.916621	-3.430804	11.679983	-12.200447	-51.702800	-24.006196	-19.622468	-10.037017	89.188138
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	98[?]
+			41.151158	71.516645	-4.320083	21.929451	-5.468281	-4.083817	-11.449431	-10.890818	3.048431	-29.792994	24.411126
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	99[?]
+			-38.455712	5.901517	-25.198904	-19.135447	-31.227476	42.867199	-40.251852	19.933796	-6.874981	15.555675	-8.810493
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	100[?]
+			-4.434415	20.421194	-94.166285	-63.918787	-44.645158	-58.143674	-14.447408	51.994122	30.372834	60.930888	-22.196360
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	101[?]
+			-52.318816	-33.104822	5.351020	-101.353769	-16.996498	-19.221956	17.267550	29.469873	21.347035	-18.117553	-37.129602
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	102[?]
+			-22.827366	-42.088731	8.730912	-28.560365	-18.678297	4.237992	40.725771	-47.438800	-9.644316	-22.872530	-0.115807
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	103[?]
+			29.805341	24.306123	6.767564	-23.521555	8.327362	-0.301528	-4.383713	-7.825106	20.215715	39.663122	5.556132
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	104[?]
+			-30.312040	-52.895678	-7.709136	-83.151088	-8.195895	-34.056581	3.225430	-33.362667	-72.016710	-4.546175	3.938871
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	105[?]
+			65.320977	-25.354311	-21.153434	10.431189	21.070918	-9.052361	48.205999	-20.886973	33.677480	-58.472584	13.063121
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	106[?]
+			-110.980633	-86.822152	55.701504	-52.861931	-20.963797	11.399944	-36.746657	-18.933343	-23.197094	26.256827	-34.872437
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	107[?]
+			12.261831	-37.247913	-30.649452	-46.604168	-0.159403	-23.011012	61.735649	-19.973130	-34.938855	-10.533002	15.836336
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	108[?]
+			6.288133	8.719771	27.743029	-15.200525	-30.217385	12.679982	-9.710528	0.253586	15.287523	57.020991	10.921808
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	109[?]
+			24.044949	12.367208	-44.556386	-53.076451	18.824448	-45.648532	-17.830558	45.652961	32.536207	16.227303	6.880780
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	110[?]
+			23.451601	33.275257	-42.103479	-17.149898	4.328240	-11.010230	4.734680	23.885341	85.214100	8.197152	-68.711803
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	111[?]
+			21.944412	38.583320	-5.594285	-26.163144	3.004279	26.892160	-25.182786	21.636723	25.287819	84.490439	26.887775
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	112[?]
+			-61.331651	-3.336254	-5.316860	4.624752	-44.564039	-21.731054	-78.449063	26.305237	4.752317	85.359563	-101.517241
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	113[?]
+			-5.688551	3.803425	-1.916389	-6.390508	30.275078	11.221024	1.982749	-47.233693	4.243875	-60.962329	1.895981
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	114[?]
+			35.938692	-10.923429	81.723186	46.970697	7.135674	9.299714	20.264252	-21.867895	-68.135032	-39.311771	-38.711370
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	115[?]
+			-5.266819	29.358847	45.985709	44.415823	23.681313	24.919666	-10.949643	-11.369360	40.320588	23.034629	-65.353839
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	116[?]
+			-80.841762	-44.084150	8.268825	-8.476465	-22.576932	13.733239	15.874234	-21.283572	-7.198385	-3.884708	64.828340
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	117[?]
+			-23.441599	-50.415500	-40.943908	-95.253286	0.152183	-1.057739	44.261520	-33.489255	-5.863383	-64.529592	3.576351
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	118[?]
+			-33.338949	-6.493648	-73.772691	-33.279162	-32.152233	-27.651515	26.926974	-16.484779	30.808762	-9.056602	52.482415
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	119[?]
+			25.866233	4.304693	-82.625989	-16.538659	17.357321	-6.191092	7.299821	14.178156	45.118103	-30.112467	-11.149996
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	120[?]
+			-12.227970	11.179965	0.022234	-59.128785	-20.756858	-4.024194	19.260247	-22.173386	-10.784553	-8.940234	-12.959283
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	121[?]
+			7.120477	45.364255	42.439859	119.897401	-8.995881	22.533141	-11.584854	-27.041359	2.610850	-13.498161	-20.670613
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	122[?]
+			44.518124	-12.773846	67.842765	35.751487	30.627151	32.181237	32.901913	-2.740635	-28.007236	22.719851	43.872476
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	123[?]
+			35.349264	-5.849355	-24.713085	46.836018	77.947187	35.842689	-3.647051	32.933496	-13.544297	46.408812	18.890977
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	124[?]
+			-33.964295	-24.332182	34.415195	55.629895	-34.540694	12.706575	-17.369823	43.768582	-19.586238	145.453427	19.797674
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	125[?]
+			-63.468637	18.067784	65.467922	12.459749	-38.829121	20.133350	26.996007	9.349465	-47.172410	29.390821	-66.556667
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	126[?]
+			22.035452	13.015443	-7.501622	15.998937	44.480803	7.007488	58.353027	-38.796845	-17.293217	-66.113522	44.362181
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	127[?]
+			6.912248	7.712793	-1.087965	-0.067063	-25.006033	-21.511631	-11.051982	-9.019579	4.876136	-39.225527	-9.819103
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	128[?]
+			53.023242	-3.080163	-21.106826	-37.904179	3.319458	5.096185	-43.041992	-3.671421	0.292214	-26.879008	-14.837085
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	129[?]
+			-44.422730	-49.449201	0.435966	-29.514186	57.154116	7.701400	7.192088	-23.411770	-36.788628	5.373668	3.844269
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	130[?]
+			77.054432	13.596126	84.931244	62.028923	4.943245	18.810650	-25.438903	-46.812404	10.385350	17.165630	23.281587
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	131[?]
+			-17.880907	-18.669919	28.144198	-10.324397	24.633965	-1.053270	70.957655	-39.057716	-39.664875	-53.137262	-4.350873
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	132[?]
+			1.644461	-57.157056	-24.994370	-39.881625	4.635536	-0.132731	-19.925156	-41.658493	-54.365932	5.023203	-11.025353
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	133[?]
+			-68.896058	-48.106722	-43.281853	-101.844480	-59.791467	-13.646496	44.067297	34.252408	-45.711898	4.136420	-15.031863
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	134[?]
+			5.045303	37.961422	9.274852	-2.933888	4.325670	-42.013128	47.416607	20.785302	45.930174	22.608975	-77.476162
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	135[?]
+			3.930748	2.868792	-65.288957	-44.138815	-18.878250	-11.237551	-4.783845	-4.980187	50.965308	4.388133	30.731075
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	136[?]
+			-23.434876	-15.187076	-46.696678	29.256273	-4.400728	-35.509162	-74.774903	45.015715	52.517726	-47.596349	53.489027
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	137[?]
+			19.784478	19.178639	-9.910676	25.776667	3.033722	2.372952	-41.346573	48.464468	44.530502	-1.962748	24.738242
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	138[?]
+			9.754637	33.555016	49.932319	5.420809	16.234609	9.904431	-35.692068	6.649174	-19.553839	31.417196	-2.651351
+#/scratch/working/resting_preproc_sub-M10933594_ses-NFB3/_scan_task-morald/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global1.motion1.quadratic1.gm0.compcor1.csf1/_mask_jah_rois2/resample_functional_to_roi_for_sca_0/residual_antswarp_flirt.nii.gz	139[?]
+			56.168183	66.240078	37.165751	96.190594	-2.264965	35.035869	-7.850973	3.669322	-10.553276	2.451136	8.429803

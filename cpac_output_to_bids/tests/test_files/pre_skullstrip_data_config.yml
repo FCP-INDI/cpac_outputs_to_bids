@@ -1,0 +1,12 @@
+- anat: /tmp/bids/sub-M10933594/ses-NFB3/anat/sub-M10933594_ses-NFB3_acq-ao_brain.nii.gz
+  creds_path: null
+  rest: {
+    task-morald: /tmp/bids/sub-M10933594/ses-NFB3/func/sub-M10933594_ses-NFB3_task-morald_bold.nii.gz,
+    task-msit: /tmp/bids/sub-M10933594/ses-NFB3/func/sub-M10933594_ses-NFB3_task-msit_bold.nii.gz,
+    task-peer_run-1: /tmp/bids/sub-M10933594/ses-NFB3/func/sub-M10933594_ses-NFB3_task-peer_run-1_bold.nii.gz,
+    task-peer_run-2: /tmp/bids/sub-M10933594/ses-NFB3/func/sub-M10933594_ses-NFB3_task-peer_run-2_bold.nii.gz,
+    task-test: /tmp/bids/sub-M10933594/ses-NFB3/func/sub-M10933594_ses-NFB3_task-test_bold.nii.gz,
+    task-train: /tmp/bids/sub-M10933594/ses-NFB3/func/sub-M10933594_ses-NFB3_task-train_bold.nii.gz}
+  site_id: site-none
+  subject_id: sub-M10933594
+  unique_id: ses-NFB3

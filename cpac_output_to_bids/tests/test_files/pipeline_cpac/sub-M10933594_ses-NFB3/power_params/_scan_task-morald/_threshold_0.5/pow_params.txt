@@ -1,0 +1,2 @@
+Subject,Scan,MeanFD_Power,MeanFD_Jenkinson,NumFD_greater_than_0.50,rootMeanSquareFD,FDquartile(top1/4thFD),PercentFD_greater_than_0.50,MeanDVARS
+sub-M10933594_ses-NFB3,task-morald,0.4634,0.2583,10.0000,0.5082,0.5357,7.0922,26.6729

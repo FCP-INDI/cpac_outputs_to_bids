@@ -1,0 +1,314 @@
+{
+  "alff_img": {
+    "write_derivative": false,
+    "description": "alff, orig space"
+  },
+  "alff_smooth": {
+    "write_derivative": false,
+    "description": "alff, orig space, smoothed"
+  },
+  "alff_to_standard": {
+    "write_derivative": false,
+    "description": "alff, template space"
+  },
+  "alff_to_standard_smooth": {
+    "write_derivative": true,
+    "description": "alff, template space, smooth,if configuration includes smoothing"
+  },
+  "anatomical_brain": {
+    "write_derivative": true,
+    "description": "skullstripped anatomical"
+  },
+  "anatomical_csf_mask": {
+    "write_derivative": true,
+    "description": "binarized CSF mask, T1w space"
+  },
+  "anatomical_gm_mask": {
+    "write_derivative": true,
+    "description": "binarized Grey Matter mask, T1w space"
+  },
+  "anatomical_to_mni_nonlinear_xfm": {
+    "write_derivative": true,
+    "description": "anat to template nonlinear warp"
+  },
+  "anatomical_to_symmetric_mni_nonlinear_xfm": {
+    "write_derivative": true,
+    "description": "anat to symmetric template nonlinear warp"
+  },
+  "anatomical_wm_mask": {
+    "write_derivative": true,
+    "description": "binarized White Matter mask, T1w space"
+  },
+  "ants_affine_xfm": {
+    "write_derivative": true,
+    "description": "ANTS affine transform, T1 to template, one of three components of linear transform,combine into single forward and backward xforms"
+  },
+  "ants_initial_xfm": {
+    "write_derivative": true,
+    "description": "ANTS initial transform, T1 to template, one of three components of linear transform,combine into single forward and backward xforms"
+  },
+  "ants_rigid_xfm": {
+    "write_derivative": true,
+    "description": "ANTS rigid body transform, T1 to template, one of three components of linear transform,combine into single forward and backward xforms"
+  },
+  "ants_symmetric_affine_xfm": {
+    "write_derivative": true,
+    "description": "ANTS affine transform, T1 to symmetric template, one of three components of linear transform,combine into single forward and backward xforms"
+  },
+  "ants_symmetric_initial_xfm": {
+    "write_derivative": true,
+    "description": "ANTS initial transform, T1 to symmetric template, one of three components of linear transform,combine into single forward and backward xforms"
+  },
+  "ants_symmetric_rigid_xfm": {
+    "write_derivative": true,
+    "description": "ANTS rigid body transform, T1 to symmetric template, one of three components of linear transform,combine into single forward and backward xforms"
+  },
+  "centrality_outputs": {
+    "write_derivative": false,
+    "description": "network centrality outputs in template space"
+  },
+  "centrality_outputs_smoothed": {
+    "write_derivative": false,
+    "description": "network centrality outputs in template space, smoothed"
+  },
+  "centrality_outputs_smoothed_zstd": {
+    "write_derivative": true,
+    "description": "network centrality outputs in template space, z-scored then smoothed,as determined by user input, only zscore if asked"
+  },
+  "centrality_outputs_zstd": {
+    "write_derivative": false,
+    "description": "network centrality outputs in template space, z-scored"
+  },
+  "coordinate_transformation": {
+    "write_derivative": false,
+    "description": "motion correction transformation matrices used for FD calculation"
+  },
+  "dr_tempreg_maps_files": {
+    "write_derivative": false,
+    "description": "dual regression spatial maps, single file per network, original space"
+  },
+  "dr_tempreg_maps_files_to_standard": {
+    "write_derivative": false,
+    "description": "dual regression spatial maps, single file per network, template space"
+  },
+  "dr_tempreg_maps_files_to_standard_smooth": {
+    "write_derivative": true,
+    "description": "dual regression spatial maps, single file per network, template space, smooth"
+  },
+  "dr_tempreg_maps_zstat_files": {
+    "write_derivative": false,
+    "description": "dual regression z-stat spatial maps, single file per network, original space"
+  },
+  "dr_tempreg_maps_zstat_files_to_standard": {
+    "write_derivative": false,
+    "description": "dual regression z-stat  spatial maps, single file per network, template space"
+  },
+  "dr_tempreg_maps_zstat_files_to_standard_smooth": {
+    "write_derivative": false,
+    "description": "dual regression z-stat  spatial maps, single file per network, template space, smooth"
+  },
+  "falff_img": {
+    "write_derivative": false,
+    "description": "fractional alff orig space"
+  },
+  "falff_smooth": {
+    "write_derivative": false,
+    "description": "fractional alff orig space smoothed"
+  },
+  "falff_to_standard": {
+    "write_derivative": false,
+    "description": "fractional alff template space"
+  },
+  "falff_to_standard_smooth": {
+    "write_derivative": true,
+    "description": "fractional alff template space smoothed"
+  },
+  "frame_wise_displacement": {
+    "write_derivative": true,
+    "description": "time series of head movement during functional scan measured using framewise displacement as defined by Power 2011"
+  },
+  "functional_brain_mask": {
+    "write_derivative": true,
+    "description": "mask calculated from EPI,  in original space"
+  },
+  "functional_brain_mask_to_standard": {
+    "write_derivative": true,
+    "description": "mask calculated from EPI,  in template space"
+  },
+  "functional_freq_filtered": {
+    "write_derivative": true,
+    "description": "functional scan slice timing corrected, motion corrected, nuisance regressed, filtered in original space"
+  },
+  "functional_nuisance_regressors": {
+    "write_derivative": true,
+    "description": "nuisance regressors extracted from functional data"
+  },
+  "functional_nuisance_residuals": {
+    "write_derivative": false,
+    "description": "orig space functional scan slice timing corrected, motion corrected, nuisance regressed in original space"
+  },
+  "functional_preprocessed_mask": {
+    "write_derivative": false,
+    "description": "mask for functional images calculated during preprocessing"
+  },
+  "functional_to_anat_linear_xfm": {
+    "write_derivative": true,
+    "description": "functional to T1 linear transform"
+  },
+  "functional_to_standard": {
+    "write_derivative": true,
+    "description": "fully preprocessed functional data written into MNI space,also included smoothed version, if specified "
+  },
+  "max_displacement": {
+    "write_derivative": true,
+    "description": "time series of max displacement at each volume"
+  },
+  "mean_functional": {
+    "write_derivative": false,
+    "description": "average functional image in original space"
+  },
+  "mean_functional_in_anat": {
+    "write_derivative": false,
+    "description": "average functional image in T1 space"
+  },
+  "mean_functional_to_standard": {
+    "write_derivative": true,
+    "description": "average functional image in template space,also included smoothed version, if specified "
+  },
+  "mni_normalized_anatomical": {
+    "write_derivative": true,
+    "description": "sMRI written to template space"
+  },
+  "mni_to_anatomical_nonlinear_xfm": {
+    "write_derivative": true,
+    "description": "nonlinear warp for sMRI to  template space"
+  },
+  "motion_correct": {
+    "write_derivative": true,
+    "description": "minimally preprocessed functional data in original space - masked, time slice corrected, and motion correction"
+  },
+  "motion_correct_smooth": {
+    "write_derivative": false,
+    "description": "smoothed minimally preprocessed functional data in original space  - masked, time slice corrected, and motion correction"
+  },
+  "motion_correct_to_standard": {
+    "write_derivative": false,
+    "description": "minimally preprocessed functional data in template space - masked, time slice corrected, and motion correction"
+  },
+  "motion_correct_to_standard_smooth": {
+    "write_derivative": false,
+    "description": "smoothed minimally preprocessed functional data in template space  - masked, time slice corrected, and motion correction"
+  },
+  "motion_params": {
+    "write_derivative": true,
+    "description": "a variety of statistics on the head motion that occurs during functional imaging,combine motion statistics across various files into single json file"
+  },
+  "output_means": {
+    "write_derivative": false,
+    "description": "global mean values for output derivatives, used in group level statistics, one file per derivative,combine into single json across all derivatives"
+  },
+  "power_params": {
+    "write_derivative": true,
+    "description": "a variety of statistics on the head motion that occurs during functional imaging,combine motion statistics across various files into single json file"
+  },
+  "raw_reho_map": {
+    "write_derivative": false,
+    "description": "regional homogeniety in original space"
+  },
+  "reho_smooth": {
+    "write_derivative": false,
+    "description": "regional homogeniety in original space, smoothed"
+  },
+  "reho_to_standard": {
+    "write_derivative": false,
+    "description": "regional homogeniety in template space"
+  },
+  "reho_to_standard_smooth": {
+    "write_derivative": true,
+    "description": "regional homogeniety in template space, smoothed"
+  },
+  "roi_timeseries": {
+    "write_derivative": true,
+    "description": "time series extracted from ROIs"
+  },
+  "roi_timeseries_for_SCA": {
+    "write_derivative": true,
+    "description": "time series extracted from ROIs, to be used in SCA, no different than other time series extracted for the same rois,consolidate with roi_timeseries"
+  },
+  "roi_timeseries_for_SCA_multreg": {
+    "write_derivative": true,
+    "description": "time series extracted from ROIs, to be used in multiple regression SCA, no different than other time series extracted for the same rois,consolidate with roi_timeseries"
+  },
+  "sca_roi_correlation_files": {
+    "write_derivative": true,
+    "description": "outputs of univariate SCA, pearson correlation coefficients, one file per ROI, in original space"
+  },
+  "sca_roi_files_smooth": {
+    "write_derivative": true,
+    "description": "smoothed outputs of univariate SCA, pearson correlation coefficients, one file per ROI, in original space"
+  },
+  "sca_roi_files_to_standard": {
+    "write_derivative": true,
+    "description": "outputs of univariate SCA, pearson correlation coefficients, one file per ROI, in template space"
+  },
+  "sca_roi_files_to_standard_smooth": {
+    "write_derivative": true,
+    "description": "smoothed outputs of univariate SCA, pearson correlation coefficients, one file per ROI, in template space"
+  },
+  "sca_tempreg_maps_files": {
+    "write_derivative": true,
+    "description": "outputs of multiple regression SCA, regression coefficients, one file per ROI, in original space"
+  },
+  "sca_tempreg_maps_files_smooth": {
+    "write_derivative": true,
+    "description": "smoothed outputs of multiple regression SCA, regression coefficients, one file per ROI, in original space"
+  },
+  "sca_tempreg_maps_zstat_files": {
+    "write_derivative": true,
+    "description": "outputs of multiple regression SCA, standardized regression coefficients, one file per ROI, in original space"
+  },
+  "sca_tempreg_maps_zstat_files_smooth": {
+    "write_derivative": true,
+    "description": "smoothed outputs of multiple regression SCA, standardized regression coefficients, one file per ROI, in original space"
+  },
+  "seg_mixeltype": {
+    "write_derivative": false,
+    "description": "contains the classification of each voxel's tissue mixture, voxels containing only one tissue type have a different mixeltype from that containing mixtures of tissues"
+  },
+  "seg_partial_volume_files": {
+    "write_derivative": false,
+    "description": "partial volume image for each of CSF, GM, and WM where each voxel contains a value in the range 0-1 that represents the proportion of that class's tissue present in that voxe"
+  },
+  "seg_partial_volume_map": {
+    "write_derivative": false,
+    "description": "ROI file for CSF, GM, and WM, where each voxel contains an integer corresponding to its most likely tissue type"
+  },
+  "seg_probability_maps": {
+    "write_derivative": false,
+    "description": "probability image for each of CSF, GM, and WM where each voxel contains a value in the range 0-1 that represents the likelihood that a voxel belongs to a tissue type"
+  },
+  "spatial_map_timeseries": {
+    "write_derivative": true,
+    "description": "time series for networks extracted using spatial regression"
+  },
+  "symmetric_mni_normalized_anatomical": {
+    "write_derivative": true,
+    "description": "sMRI written to symmetric template space"
+  },
+  "symmetric_mni_to_anatomical_nonlinear_xfm": {
+    "write_derivative": true,
+    "description": "nonlinear warp for sMRI to symmetric template space"
+  },
+  "vmhc_fisher_zstd": {
+    "write_derivative": false,
+    "description": "VMHC in symmetric template space, fisher transformed"
+  },
+  "vmhc_fisher_zstd_zstat_map": {
+    "write_derivative": true,
+    "description": "VMHC in symmetric template space, fisher transformed, variance normalized"
+  },
+  "vmhc_raw_score": {
+    "write_derivative": false,
+    "description": "VMHC in symmetric template space"
+  }
+}
