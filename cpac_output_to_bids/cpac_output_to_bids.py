@@ -220,22 +220,26 @@ def extract_bids_variants_from_cpac_outputs(cpac_output_bids_dictionary):
                         if selector_groups.groups()[tag_index] not in selector_items_dict[tag]:
                             selector_items_dict[tag][selector_groups.groups()[tag_index]] = []
                         selector_items_dict[tag][selector_groups.groups()[tag_index]].append(selector)
+                else:
+                    raise ValueError(
+                        "Error! selector {0} does not match template string, is it malformed?".format(selector))
 
         # go through and remove items with only one value, those are invariant across derivatives.
         selector_string_items = {}
         for tag in cpac_nvr_selector_tags:
-            selector_item = selector_items_dict[tag]
-            if len(selector_item) > 1:
-                for tag_value in selector_item:
-                    for selector in selector_items_dict[tag][tag_value]:
-                        if selector not in selector_string_items:
-                            selector_string_items[selector] = []
-                        if tag_value == '1':
-                            selector_string_items[selector].append(tag)
-                        elif tag_value == '0':
-                            selector_string_items[selector].append("No"+tag)
-                        else:
-                            selector_string_items[selector].append(tag+tag_value)
+            if tag in selector_items_dict:
+                selector_item = selector_items_dict[tag]
+                if len(selector_item) > 1:
+                    for tag_value in selector_item:
+                        for selector in selector_items_dict[tag][tag_value]:
+                            if selector not in selector_string_items:
+                                selector_string_items[selector] = []
+                            if tag_value == '1':
+                                selector_string_items[selector].append(tag)
+                            elif tag_value == '0':
+                                selector_string_items[selector].append("No"+tag)
+                            else:
+                                selector_string_items[selector].append(tag+tag_value)
 
         for selector in selector_string_items:
             for parameter_string in parameter_variant_mapping[pipeline_name]:
@@ -569,7 +573,6 @@ def extract_bids_derivative_info_from_cpac_outputs(cpac_output_list, cpac_data_c
             print("Warning! Could not construct data config key for path {0} : {1}".format(cpac_output,
                                                                                            derivative_elements))
 
-        bids_input_path = ''
         if bids_input_path_key in cpac_data_config_dict and cpac_data_config_dict[bids_input_path_key]:
             if 'source_type' in derivative_elements:
                 if 'anat' in derivative_elements['source_type']:
@@ -629,19 +632,17 @@ def extract_bids_derivative_info_from_cpac_outputs(cpac_output_list, cpac_data_c
     return cpac_output_bids_dictionary
 
 
-def convert_cpac_output_to_bids_derivative(cpac_output_bids_dictionary, link=True):
+def create_bids_outputs_dictionary(cpac_output_bids_dictionary):
     """
-    Copy cpac output files into BIDS format. Transforms files between formats for some types.
+    Creates a dictionary that maps cpac paths to bids paths
 
     :param cpac_output_bids_dictionary: mapping from original file name to bids dictionary, which will be converted into
         a filename
-    :param link: boolean, whether to create a link for the file rather than copying. This is the default. Files that are
-        transformed will be created regardless of this setting
-    :return: nada
+    :return: path mapping dictionary
     """
 
+    cpac_bids_path_map = {}
     for (cpac_output_path, bids_dict) in cpac_output_bids_dictionary.items():
-        bids_path = ''
         if 'derivative' in bids_dict:
             bids_path = bids_dict["bids_derivative_path"] + '/' + '_'.join(
                 [bids_dict['source']] +
@@ -650,14 +651,12 @@ def convert_cpac_output_to_bids_derivative(cpac_output_bids_dictionary, link=Tru
                  key in bids_dict and bids_dict[key]] +
                 [bids_dict['derivative']]) + "." + bids_dict['bids_file_extension']
 
-            if link:
-                print("ln -s {0} {1}".format(bids_path, cpac_output_path))
-            else:
-                print("cp {1} {0}".format(bids_path, cpac_output_path))
+            cpac_bids_path_map[cpac_output_path] = bids_path
+
         else:
             print('{0} is missing {1}'.format(bids_dict, 'derivative'))
 
-    return True
+    return cpac_bids_path_map
 
 
 def convert_nuisance_regressors_to_bids(cpac_regressor_filepath, bids_regressor_filepath):
@@ -922,5 +921,3 @@ def convert_cpac_roi_tc_to_bids(cpac_roi_file, bids_roi_file):
         timeseries_df.to_csv(bids_roi_file, sep='\t', index=False)
 
     return bids_roi_file
-
-
