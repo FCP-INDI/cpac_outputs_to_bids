@@ -8,8 +8,7 @@ def readme():
 setup(name='cpac_outputs_to_bids',
       version='0.1',
       description='Converts CPAC outputs into BIDS derivative format.',
-      long_description='Converts CPAC outputs into BIDS derivative format. Greatly reduces space requirements, '
-                       'improves organization, and works with BIDs Apps!',
+      long_description=readme(),
       classifiers=['Development Status :: 3 = Alpha',
                    'License :: OSI Approved :: MIT License',
                    'Programming Language :: Python :: 3',
