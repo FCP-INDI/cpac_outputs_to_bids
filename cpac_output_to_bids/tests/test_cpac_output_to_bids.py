@@ -211,3 +211,65 @@ class TestCPACOutputConversion(TestCase):
 
             outfile = cpb.convert_cpac_roi_tc_to_bids(cpac_output_path, bids_output_path)
             assert os.path.isfile(outfile)
+
+    def test_everything(self):
+
+        import cpac_output_to_bids as cpb
+        import json
+        import yaml
+        import os
+
+        cpac_paths_file_path = os.path.dirname(__file__) + '/test_files/sub-M10933594_ses-NFB3.json'
+        cpac_derivatives_dictionary_path = os.path.dirname(
+            __file__) + '/test_files/test_cpac_derivatives_dictionary.json'
+        cpac_data_config_file = os.path.dirname(__file__) + '/test_files/pre_skullstrip_data_config.yml'
+        output_reference_dictionary = os.path.dirname(__file__) + '/test_files/sub-M10933594_ses-NFB3_cpac_to_bids.json'
+
+        # first thing, create a series of empty cpac output files using "touch", these will mimic nifti files
+        # which are either copied or linked to in the process of converting from CPAC to BIDS. Other files that
+        # are actually converted in the process can already be found in the test_files directory
+
+        with open(cpac_derivatives_dictionary_path, 'r') as json_input_stream:
+            cpac_derivatives_dictionary = json.load(json_input_stream)
+
+        cpac_write_derivative_list = [key for (key, value) in cpac_derivatives_dictionary.items() if
+                                      value['write_derivative'] is True]
+
+        with open(cpac_paths_file_path, 'r') as json_input_stream:
+            cpac_output_file_paths = json.load(json_input_stream)
+
+        with open(cpac_data_config_file, 'r') as yaml_input_stream:
+            cpac_data_config_list = yaml.load(yaml_input_stream)
+
+        cpac_data_config_dict = {}
+        for cpac_data_config in cpac_data_config_list:
+            cpac_data_config_dict[
+                "_".join([cpac_data_config['subject_id'], cpac_data_config['unique_id']]).lower()] = cpac_data_config
+
+        bids_dictionary = cpb.extract_bids_derivative_info_from_cpac_outputs(cpac_output_file_paths,
+                                                                             cpac_data_config_dict, {},
+                                                                             cpac_write_derivative_list)
+
+        assert isinstance(bids_dictionary, dict)
+        assert bids_dictionary != {}
+
+        cpac_bids_path_mapping = cpb.create_bids_outputs_dictionary(bids_dictionary)
+        assert isinstance(cpac_bids_path_mapping, dict)
+
+        # with open(os.path.dirname(__file__)+'/test_files/test_paths.json', 'w') as json_output_stream:
+        #     json.dump(cpac_bids_path_mapping, json_output_stream, indent=4)
+
+        # compare against hand verified reference mapping
+        with open(output_reference_dictionary, 'r') as json_input_stream:
+            reference_cpac_bids_path_mapping = json.load(json_input_stream)
+
+        for cpac_path, bids_path in cpac_bids_path_mapping.items():
+            assert bids_path == reference_cpac_bids_path_mapping[cpac_path]
+
+        # eventually could add a test for bids compliance
+
+    def test_everything(self):
+
+        import cpac_output_to_bids as cpb
+
+        cpb.main(None)

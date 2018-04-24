@@ -5,6 +5,7 @@ from scipy.io import loadmat
 import numpy as np
 import pandas as pd
 import json
+import shutil
 
 bids_name_converter = {'compcor': 'aCompCorErr',
                        'wm': 'WhiteMatterMean',
@@ -921,3 +922,69 @@ def convert_cpac_roi_tc_to_bids(cpac_roi_file, bids_roi_file):
         timeseries_df.to_csv(bids_roi_file, sep='\t', index=False)
 
     return bids_roi_file
+
+
+def copy_cpac_outputs_into_bids(cpac_bids_path_map, hard_link_instead_of_copy=False, soft_link_instead_of_copy=False):
+    """
+    Copy (or link) cpac outputs into the bids structure
+
+    :param cpac_bids_path_map: dictionary that maps cpac output paths to bids paths
+    :param hard_link_instead_of_copy: save space by creating links to the files instead of copying, hard links are used
+            to retain the data if you delete the CPAC output. Hard links will not work when linking across filesystems
+            This will not effect files that are produced, such as TSV
+            and JSON files, as a result of the bidsification process, they cannot be created through links.
+            default = False.
+    :param soft_link_instead_of_copy: save space by creating links to the files instead of copying, symbolic (soft)
+            links are used, which unlike hard links can span different filesystems. E.g. you could create links from
+            your local drive to files that exist on a network attached storage server.
+
+            to retain the data if you delete the CPAC output. This will not effect files that are produced, such as TSV
+            and JSON files, as a result of the bidsification process, they cannot be created through links.
+            default = False.
+
+    :return: number of files transferred.
+    """
+
+    if not cpac_bids_path_map:
+        raise ValueError("Expected cpac_bids_path_map to contain a dictionary, got nothing.")
+
+    if not isinstance(cpac_bids_path_map, dict):
+        raise ValueError(
+            "Expected cpac_bids_path_map to contain a dictionary, got a {0}".format(type(cpac_bids_path_map)))
+
+    number_of_files_converted = 0
+
+    for (cpac_output_path, bids_output_path) in cpac_bids_path_map.items():
+
+        # first determine whether a converter is required, determine this from the bids path instead of the cpac path
+        # since it is a bit cleaner, and multiple cpac files map to the same bids file, so the logic is easier
+        if 'nuisance.tsv' in bids_output_path:
+            convert_nuisance_regressors_to_bids(cpac_output_path, bids_output_path)
+
+        elif 'motionregressors.tsv' in bids_output_path:
+            aggregate_movement_parameters(cpac_output_path, bids_output_path)
+
+        elif 'motionstats.json' in bids_output_path:
+            aggregate_movement_statistics(cpac_output_path, bids_output_path)
+
+        elif 'roisdata.tsv' in bids_output_path:
+            convert_cpac_roi_tc_to_bids(cpac_output_path, bids_output_path)
+
+        elif hard_link_instead_of_copy is True:
+
+            try:
+                os.link(cpac_output_path, bids_output_path)
+            except Exception as e:
+                print("Error: Could not create hard link. Are {0} and {1} on the same device? {2}".format(
+                    cpac_output_path, bids_output_path, e.message))
+                raise e
+
+        elif soft_link_instead_of_copy is True:
+            os.symlink(cpac_output_path, bids_output_path)
+
+        else:
+            shutil.copy(cpac_output_path, bids_output_path)
+
+        number_of_files_converted += 1
+
+    return number_of_files_converted
