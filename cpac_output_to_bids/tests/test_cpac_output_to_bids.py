@@ -271,5 +271,9 @@ class TestCPACOutputConversion(TestCase):
     def test_everything(self):
 
         import cpac_output_to_bids as cpb
+        import os
 
-        cpb.main(None)
+        cpac_data_config_file = os.path.dirname(__file__) + '/test_files/pre_skullstrip_data_config.yml'
+        cpac_output_directory = os.path.dirname(__file__) + '/test_files/pipeline_cpac'
+
+        cpb.main([cpac_data_config_file, cpac_output_directory, 'bids_dir', 'dry_run'])
