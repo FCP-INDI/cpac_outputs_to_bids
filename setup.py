@@ -1,9 +1,29 @@
-from setuptools import setup
+from subprocess import call
+
+from setuptools import Command, find_packages, setup
 
 
 def readme():
     with open('README.md') as f:
         return f.read()
+
+
+class RunTests(Command):
+    """Run all tests."""
+    description = 'run tests'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        """Run all tests!"""
+        errno = call(['py.test', '--cov=cpac_output_to_bids', '--cov-report=term-missing'])
+        raise SystemExit(errno)
+
 
 setup(name='cpac_outputs_to_bids',
       version='0.1',
@@ -23,7 +43,16 @@ setup(name='cpac_outputs_to_bids',
           'numpy',
           'scipy',
           'pandas',
-          'yaml'
+          'pyyaml'
       ],
+      extras_require={
+          'test': ['coverage', 'pytest', 'pytest-cov'],
+      },
+      entry_points={
+          'console_scripts': [
+              'cpb=cpac_output_to_bids.cli:main',
+          ],
+      },
+      cmdclass={'test': RunTests},
       include_package_data=True,
       zip_safe=False)

@@ -163,6 +163,8 @@ class TestCPACOutputConversion(TestCase):
             if not os.path.isdir(os.path.dirname(bids_output_path)):
                 os.makedirs(os.path.dirname(bids_output_path), exist_ok=True)
 
+            print("Converting {0} to {1}".format(cpac_output_path, bids_output_path))
+
             outfile = cpb.aggregate_movement_statistics(cpac_output_path, bids_output_path)
             assert os.path.isfile(outfile)
 
@@ -270,10 +272,24 @@ class TestCPACOutputConversion(TestCase):
 
     def test_everything(self):
 
-        import cpac_output_to_bids as cpb
+        from cpac_output_to_bids.cli import main
         import os
 
         cpac_data_config_file = os.path.dirname(__file__) + '/test_files/pre_skullstrip_data_config.yml'
         cpac_output_directory = os.path.dirname(__file__) + '/test_files/pipeline_cpac'
 
-        cpb.main([cpac_data_config_file, cpac_output_directory, 'bids_dir', 'dry_run'])
+        main(['-h'])
+        main(['-d', cpac_data_config_file, '-c', cpac_output_directory, 'dry_run'])
+        main(['-d', cpac_data_config_file, '-c', cpac_output_directory, '-o', '/tmp/bids_out', 'dry_run'])
+        main(['-d', cpac_data_config_file, '-c', cpac_output_directory, '-o', '/tmp/bids_out', 'copy'])
+        main(['-d', cpac_data_config_file, '-c', cpac_output_directory, '-o', '/tmp/bids_out', '--debug', 'copy'])
+
+
+
+        # main(['--cpac_data_config',cpac_data_config_file, cpac_output_directory, '/tmp/bids_out', 'dry_run'])
+        # main([cpac_data_config_file, cpac_output_directory, '/tmp/bids_out_copy', 'copy'])
+        # main([cpac_data_config_file, cpac_output_directory, '/tmp/bids_out_soft', 'sym_link'])
+        # main([cpac_data_config_file, cpac_output_directory, '/tmp/bids_out_hard', 'hard_link'])
+
+
+        # cpb.main(['-h'])

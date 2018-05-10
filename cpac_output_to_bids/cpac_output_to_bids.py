@@ -296,7 +296,8 @@ def extract_bids_variants_from_cpac_outputs(cpac_output_bids_dictionary):
 
 def extract_bids_derivative_info_from_cpac_outputs(cpac_output_list, cpac_data_config_dict,
                                                    cpac_output_bids_dictionary=None,
-                                                   derivatives_to_write=None):
+                                                   derivatives_to_write=None,
+                                                   bids_output_directory=None):
     """
     Using a list of cpac outputs determine their BIDs derivative types and other elements to use in the bids conversion.
 
@@ -306,6 +307,9 @@ def extract_bids_derivative_info_from_cpac_outputs(cpac_output_list, cpac_data_c
     :param cpac_output_bids_dictionary: a dictionary that maps cpac outputs to their BIDs derivative elements, empty by
         default
     :param derivatives_to_write: list of cpac derivatives that are desired, others will be ignored
+    :param bids_output_directory: directory where bidsified output files should be written. Defaults to None, in which
+        case the derivatives will be written into the same bids directory structure as the input files, as determined
+        from the CPAC data config corresponding to the analysis.
     :return: a dictionary that maps the output name to the BIDs derivative elements
     """
 
@@ -549,7 +553,7 @@ def extract_bids_derivative_info_from_cpac_outputs(cpac_output_list, cpac_data_c
 
             elif 'power_params' in cpac_output or 'motion_parameters' in cpac_output:
                 derivative_elements['derivative'] = 'motionstats'
-                derivative_elements['bids_file_extension'] = 'tsv'
+                derivative_elements['bids_file_extension'] = 'json'
             elif 'movement_parameters' in cpac_output:
                 derivative_elements['derivative'] = 'motionregressors'
                 derivative_elements['bids_file_extension'] = 'tsv'
@@ -606,12 +610,15 @@ def extract_bids_derivative_info_from_cpac_outputs(cpac_output_list, cpac_data_c
             print("Warning! Could not find {0} in data config".format(bids_input_path_key))
             continue
 
-        bids_input_path_sub_search = re.search('/sub-.*?/', bids_input_path)
-        if bids_input_path_sub_search:
-            derivative_elements['bids_root'] = bids_input_path[0:bids_input_path_sub_search.start()]
+        if bids_output_directory:
+            derivative_elements['bids_root'] = bids_output_directory
         else:
-            print("Warning! Could not find subject directory in output path {0}. Is it malformed?")
-            continue
+            bids_input_path_sub_search = re.search('/sub-.*?/', bids_input_path)
+            if bids_input_path_sub_search:
+                derivative_elements['bids_root'] = bids_input_path[0:bids_input_path_sub_search.start()]
+            else:
+                print("Warning! Could not find subject directory in output path {0}. Is it malformed?")
+                continue
 
         derivative_elements["bids_derivative_path"] = output_path_template.format(**derivative_elements)
 
@@ -639,11 +646,13 @@ def create_bids_outputs_dictionary(cpac_output_bids_dictionary):
 
     :param cpac_output_bids_dictionary: mapping from original file name to bids dictionary, which will be converted into
         a filename
+
     :return: path mapping dictionary
     """
 
     cpac_bids_path_map = {}
     for (cpac_output_path, bids_dict) in cpac_output_bids_dictionary.items():
+
         if 'derivative' in bids_dict:
             bids_path = bids_dict["bids_derivative_path"] + '/' + '_'.join(
                 [bids_dict['source']] +
@@ -930,15 +939,14 @@ def copy_cpac_outputs_into_bids(cpac_bids_path_map, hard_link_instead_of_copy=Fa
 
     :param cpac_bids_path_map: dictionary that maps cpac output paths to bids paths
     :param hard_link_instead_of_copy: save space by creating links to the files instead of copying, hard links are used
-            to retain the data if you delete the CPAC output. Hard links will not work when linking across filesystems
-            This will not effect files that are produced, such as TSV
-            and JSON files, as a result of the bidsification process, they cannot be created through links.
+            to retain the bids organized data if you delete the CPAC output. Hard links will not work when linking
+            across filesystems. This will not effect files that are produced, such as TSV and JSON files, as a result
+            of the bidsification process, they cannot be created through links.
             default = False.
     :param soft_link_instead_of_copy: save space by creating links to the files instead of copying, symbolic (soft)
             links are used, which unlike hard links can span different filesystems. E.g. you could create links from
-            your local drive to files that exist on a network attached storage server.
-
-            to retain the data if you delete the CPAC output. This will not effect files that are produced, such as TSV
+            your local drive to files that exist on a network attached storage server. You will not retain the bids
+            organized data if you delete the CPAC output. This will not effect files that are produced, such as TSV
             and JSON files, as a result of the bidsification process, they cannot be created through links.
             default = False.
 
@@ -956,35 +964,34 @@ def copy_cpac_outputs_into_bids(cpac_bids_path_map, hard_link_instead_of_copy=Fa
 
     for (cpac_output_path, bids_output_path) in cpac_bids_path_map.items():
 
+        # make sure that the output directory exists
+        try:
+            os.makedirs(os.path.dirname(bids_output_path))
+        except FileExistsError:
+            pass
+
         # first determine whether a converter is required, determine this from the bids path instead of the cpac path
         # since it is a bit cleaner, and multiple cpac files map to the same bids file, so the logic is easier
-        if 'nuisance.tsv' in bids_output_path:
-            convert_nuisance_regressors_to_bids(cpac_output_path, bids_output_path)
-
-        elif 'motionregressors.tsv' in bids_output_path:
-            aggregate_movement_parameters(cpac_output_path, bids_output_path)
-
-        elif 'motionstats.json' in bids_output_path:
-            aggregate_movement_statistics(cpac_output_path, bids_output_path)
-
-        elif 'roisdata.tsv' in bids_output_path:
-            convert_cpac_roi_tc_to_bids(cpac_output_path, bids_output_path)
-
-        elif hard_link_instead_of_copy is True:
-
-            try:
+        try:
+            if 'nuisance.tsv' in bids_output_path:
+                convert_nuisance_regressors_to_bids(cpac_output_path, bids_output_path)
+            elif 'motionregressors.tsv' in bids_output_path:
+                aggregate_movement_parameters(cpac_output_path, bids_output_path)
+            elif 'motionstats.json' in bids_output_path:
+                aggregate_movement_statistics(cpac_output_path, bids_output_path)
+            elif 'roisdata.tsv' in bids_output_path:
+                convert_cpac_roi_tc_to_bids(cpac_output_path, bids_output_path)
+            elif hard_link_instead_of_copy is True:
                 os.link(cpac_output_path, bids_output_path)
-            except Exception as e:
-                print("Error: Could not create hard link. Are {0} and {1} on the same device? {2}".format(
-                    cpac_output_path, bids_output_path, e.message))
-                raise e
+            elif soft_link_instead_of_copy is True:
+                os.symlink(cpac_output_path, bids_output_path)
+            else:
+                shutil.copy(cpac_output_path, bids_output_path)
 
-        elif soft_link_instead_of_copy is True:
-            os.symlink(cpac_output_path, bids_output_path)
+            number_of_files_converted += 1
 
-        else:
-            shutil.copy(cpac_output_path, bids_output_path)
-
-        number_of_files_converted += 1
+        except FileExistsError:
+            print("File {} already exists, skipping ...".format(bids_output_path))
+            pass
 
     return number_of_files_converted
