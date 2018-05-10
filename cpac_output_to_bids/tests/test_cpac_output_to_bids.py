@@ -278,18 +278,8 @@ class TestCPACOutputConversion(TestCase):
         cpac_data_config_file = os.path.dirname(__file__) + '/test_files/pre_skullstrip_data_config.yml'
         cpac_output_directory = os.path.dirname(__file__) + '/test_files/pipeline_cpac'
 
-        main(['-h'])
         main(['-d', cpac_data_config_file, '-c', cpac_output_directory, 'dry_run'])
         main(['-d', cpac_data_config_file, '-c', cpac_output_directory, '-o', '/tmp/bids_out', 'dry_run'])
         main(['-d', cpac_data_config_file, '-c', cpac_output_directory, '-o', '/tmp/bids_out', 'copy'])
-        main(['-d', cpac_data_config_file, '-c', cpac_output_directory, '-o', '/tmp/bids_out', '--debug', 'copy'])
-
-
-
-        # main(['--cpac_data_config',cpac_data_config_file, cpac_output_directory, '/tmp/bids_out', 'dry_run'])
-        # main([cpac_data_config_file, cpac_output_directory, '/tmp/bids_out_copy', 'copy'])
-        # main([cpac_data_config_file, cpac_output_directory, '/tmp/bids_out_soft', 'sym_link'])
-        # main([cpac_data_config_file, cpac_output_directory, '/tmp/bids_out_hard', 'hard_link'])
-
-
-        # cpb.main(['-h'])
+        main(['-d', cpac_data_config_file, '-c', cpac_output_directory, '-o', '/tmp/bids_out', '--debug', 'hard_link'])
+        main(['-d', cpac_data_config_file, '-c', cpac_output_directory, '-o', '/tmp/bids_out', '--debug', 'sym_link'])
