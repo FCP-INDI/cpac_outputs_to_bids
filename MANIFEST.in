@@ -1,3 +1,15 @@
+exclude .gitignore
+exclude .coverage
+exclude .travis.yml
+
+prune .cache
+prune .git
+prune build
+prune dist
+recursive-exclude *.egg-info *
+recursive-include tests *
+
+include setup.cfg
 include README.md
-include cpac_derivatives_dictionary.json
+include cpac_output_to_bids/config/cpac_derivatives_dictionary.json
 include cpac_output_to_bids/tests/test_files/*
