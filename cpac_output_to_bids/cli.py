@@ -39,12 +39,18 @@ def main(input_arguments=None):
 
     parser.add_argument('-c', '--cpac_output_path',
                         help='This is the directory of CPAC outputs that will be converted to bids. Required.',
-                        required=True)
+                        required=False)
 
     parser.add_argument('-d', '--cpac_data_config',
                         help='CPAC data configuration file used to generate output, helps map derivatives to the '
                              'original data. Required.',
-                        required=True)
+                        required=False)
+
+    parser.add_argument('-m', '--cpac_bids_map',
+                        help='Dictionary that maps CPAC paths directly to BIDS paths. This mapping can be generated '
+                             'using the "dry_run" command. This is mostly a time saving measure to avoid having to '
+                             're-scan the file system after a dry run.',
+                        required=False)
 
     parser.add_argument('-o', '--output_dir',
                         help='The directory where the output files should be stored. Output files will be arranged '
@@ -79,80 +85,107 @@ def main(input_arguments=None):
     # create a timestamp for writing config files
     timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M%S')
 
-    # read in the data configuration file
-    with open(args.cpac_data_config, 'r') as yaml_input_stream:
-        cpac_data_config_list = yaml.load(yaml_input_stream)
+    if args.cpac_bids_map:
+        print("{0}: cpb called with cpac to bids map file {1} and command {2}.".format(timestamp, 
+            args.cpac_bids_map, args.command))
+        with open(args.cpac_bids_map, 'r') as infd:
+            cpac_bids_path_mapping = json.load(infd)
 
-    cpac_data_config_dict = {}
-    for cpac_data_config in cpac_data_config_list:
-        cpac_data_config_dict[
-            "_".join(
-                [cpac_data_config['subject_id'], cpac_data_config['unique_id']]).lower()] = cpac_data_config
+    else:
+        print("{0}: cpb called with output directory {1}, config file {2} and command {3}.".format(timestamp, 
+            args.cpac_output_path, args.cpac_data_config, args.command))
 
-    # get a list of paths from the directory
-    cpac_output_file_paths = []
-    for path_root, directories, file_names in os.walk(args.cpac_output_path):
-        for file_name in file_names:
-            if file_name[0] != '.':
-                cpac_output_file_paths.append(os.path.join(path_root, file_name))
+        # read in the data configuration file
+        with open(args.cpac_data_config, 'r') as yaml_input_stream:
+            cpac_data_config_list = yaml.load(yaml_input_stream)
 
-    # get the list of derivatives to write:
-    if not args.derivative_conversion_config:
-        args.derivative_conversion_config = os.path.join(os.path.dirname(__file__),
+        cpac_data_config_dict = {}
+        for cpac_data_config in cpac_data_config_list:
+            cpac_data_config_dict[
+                "_".join(
+                    [cpac_data_config['subject_id'], cpac_data_config['unique_id']]).lower()] = cpac_data_config
+    
+        print("Searching {0} for file paths".format(args.cpac_output_path))
+
+        # get a list of paths from the directory
+        cpac_output_file_paths = []
+        file_count = 0
+        for path_root, directories, file_names in os.walk(args.cpac_output_path):
+            for file_name in file_names:
+                if file_name[0] != '.':
+                    cpac_output_file_paths.append(os.path.join(path_root, file_name))
+                    if file_count % 1000 == 0:
+                        print(".", end='', flush=True)
+                    file_count += 1
+        print(" finished")
+  
+
+        if not cpac_output_file_paths:
+            raise ValueError("Did not find any cpac output files in {0}, is the path correct?".format(args.cpac_output_path))
+
+        print("Found {0} file paths to parse".format(len(cpac_output_file_paths)))
+
+        # get the list of derivatives to write:
+        if not args.derivative_conversion_config:
+            args.derivative_conversion_config = os.path.join(os.path.dirname(__file__),
                                                          'config/cpac_derivatives_dictionary.json')
 
-    with open(args.derivative_conversion_config, 'r') as json_input_stream:
-        cpac_derivatives_dictionary = json.load(json_input_stream)
+        with open(args.derivative_conversion_config, 'r') as json_input_stream:
+            cpac_derivatives_dictionary = json.load(json_input_stream)
 
-    cpac_write_derivative_list = [key for (key, value) in cpac_derivatives_dictionary.items() if
-                                  value['write_derivative'] is True]
+        cpac_write_derivative_list = [key for (key, value) in cpac_derivatives_dictionary.items() if
+                                      value['write_derivative'] is True]
 
-    bids_dictionary = cpb.extract_bids_derivative_info_from_cpac_outputs(cpac_output_file_paths,
-                                                                         cpac_data_config_dict, {},
-                                                                         cpac_write_derivative_list,
-                                                                         args.output_dir)
+        bids_dictionary = cpb.extract_bids_derivative_info_from_cpac_outputs(cpac_output_file_paths,
+                                                                             cpac_data_config_dict, {},
+                                                                             cpac_write_derivative_list,
+                                                                             args.output_dir)
 
-    cpac_bids_path_mapping = cpb.create_bids_outputs_dictionary(bids_dictionary)
+        cpac_bids_path_mapping = cpb.create_bids_outputs_dictionary(bids_dictionary)
 
     if debug_flag is True:
-        # write out all of the conversion information to json files
-        debug_data_config_filename = '/tmp/data_config_{0}.json'.format(timestamp)
-        with open(debug_data_config_filename, 'w') as json_out:
-            json.dump(cpac_data_config_dict, json_out, indent=4)
+ 
+        if not args.cpac_bids_map:
+            # write out all of the conversion information to json files
+            debug_data_config_filename = '/tmp/data_config_{0}.json'.format(timestamp)
+            with open(debug_data_config_filename, 'w') as json_out:
+                json.dump(cpac_data_config_dict, json_out, indent=4)
 
-        debug_cpac_output_file_paths_filename = '/tmp/cpac_outputs_{0}.json'.format(timestamp)
-        with open(debug_cpac_output_file_paths_filename, 'w') as json_out:
-            json.dump(cpac_output_file_paths, json_out, indent=4)
+            debug_cpac_output_file_paths_filename = '/tmp/cpac_outputs_{0}.json'.format(timestamp)
+            with open(debug_cpac_output_file_paths_filename, 'w') as json_out:
+                json.dump(cpac_output_file_paths, json_out, indent=4)
 
-        debug_derivative_conversion_config_filename = '/tmp/derivatives_config_{0}.json'.format(timestamp)
-        with open(debug_derivative_conversion_config_filename, 'w') as json_out:
-            json.dump(cpac_derivatives_dictionary, json_out, indent=4)
+            debug_derivative_conversion_config_filename = '/tmp/derivatives_config_{0}.json'.format(timestamp)
+            with open(debug_derivative_conversion_config_filename, 'w') as json_out:
+                json.dump(cpac_derivatives_dictionary, json_out, indent=4)
+
+            print("\ncpac_output_to_bids configuration files written to:\n\t{0}\n\t{1}\n\t{2}\n".format(
+                debug_data_config_filename, debug_cpac_output_file_paths_filename,
+                debug_derivative_conversion_config_filename))
 
         debug_cpac_bids_mapping_filename = '/tmp/cpac_bids_mapping_{0}.json'.format(timestamp)
         with open(debug_cpac_bids_mapping_filename, 'w') as json_out:
             json.dump(cpac_bids_path_mapping, json_out, indent=4)
 
-        print("\ncpac_output_to_bids configuration files written to:\n\t{0}\n\t{1}\n\t{2}\n\t{3}\n".format(
-            debug_data_config_filename, debug_cpac_output_file_paths_filename,
-            debug_derivative_conversion_config_filename,
-            debug_cpac_bids_mapping_filename))
+        print("Final mapping written to {0}.".format(debug_cpac_bids_mapping_filename))
+
 
     if 'dry_run' in args.command:
         print("This is a dry run, none of the cpac outputs were converted to bids format.")
     else:
         number_of_files_converted = 0
         if 'copy' in args.command:
-            print("Copying bidsified files into {}.".format(args.output_dir))
+            print("Copying files into bids.")
             number_of_files_converted = cpb.copy_cpac_outputs_into_bids(cpac_bids_path_mapping,
                                                                         hard_link_instead_of_copy=False,
                                                                         soft_link_instead_of_copy=False)
         elif 'sym_link' in args.command:
-            print("Creating symbolic links for bidsified files in {}.".format(args.output_dir))
+            print("Creating symbolic links for bidsified files.")
             number_of_files_converted = cpb.copy_cpac_outputs_into_bids(cpac_bids_path_mapping,
                                                                         hard_link_instead_of_copy=False,
                                                                         soft_link_instead_of_copy=True)
         elif 'hard_link' in args.command:
-            print("Creating hard links for bidsified files in {}.".format(args.output_dir))
+            print("Creating hard links for bidsified files.")
             number_of_files_converted = cpb.copy_cpac_outputs_into_bids(cpac_bids_path_mapping,
                                                                         hard_link_instead_of_copy=True,
                                                                         soft_link_instead_of_copy=False)

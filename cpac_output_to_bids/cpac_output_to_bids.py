@@ -903,7 +903,7 @@ def convert_cpac_roi_tc_to_bids(cpac_roi_file, bids_roi_file):
     if not bids_roi_file:
         raise ValueError("bids_roi_file is empty, expected path to file to be created.")
 
-    timeseries_df = pd.read_csv(cpac_roi_file, delim_whitespace=True, header=None, comment="#")
+    timeseries_df = pd.read_csv(cpac_roi_file, delim_whitespace=True, header=None, comment="#", engine="python")
 
     if "spatial_map_timeseries" in cpac_roi_file:
         timeseries_df.columns = ["ROI{0}SpatReg".format(roi_num+1) for roi_num in range(0, timeseries_df.shape[1])]
@@ -980,7 +980,10 @@ def copy_cpac_outputs_into_bids(cpac_bids_path_map, hard_link_instead_of_copy=Fa
             elif 'motionstats.json' in bids_output_path:
                 aggregate_movement_statistics(cpac_output_path, bids_output_path)
             elif 'roisdata.tsv' in bids_output_path:
-                convert_cpac_roi_tc_to_bids(cpac_output_path, bids_output_path)
+                try:
+                    convert_cpac_roi_tc_to_bids(cpac_output_path, bids_output_path)
+                except pd.errors.EmptyDataError as e:
+                    print("ROI file {0} is empty, skipping ...".format(cpac_output_path))
             elif hard_link_instead_of_copy is True:
                 os.link(cpac_output_path, bids_output_path)
             elif soft_link_instead_of_copy is True:
